@@ -60,6 +60,23 @@ const bindEditDeleteEvents = () => {
   });
 };
 
+// Function to save data to localStorage
+const saveDataToLocalStorage = () => {
+  const data = {
+    tempAmount: tempAmount,
+    expenditureValue: expenditureValue.innerText,
+    balanceValue: balanceValue.innerText,
+    listHTML: list.innerHTML
+  };
+
+  console.log("Data before saving:", data); // Log data before saving
+
+  localStorage.setItem("budgetAppData", JSON.stringify(data));
+
+  console.log("Data after saving:", data); // Log data after saving
+};
+
+
 //Function To Create List
 const listCreator = (expenseName, expenseValue) => {
   let sublistContent = document.createElement("div");
