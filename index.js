@@ -1,6 +1,6 @@
 // Function to modify list elements
 const modifyElement = (element, edit = false) => {
-  let parentDiv = element.parentElement.parentElement;
+  let parentDiv = element.closest(".sublist-content");
   let parentAmount = parentDiv.querySelector(".amount").textContent;
   if (edit) {
     let parentText = parentDiv.querySelector(".product").textContent;
