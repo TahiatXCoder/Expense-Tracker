@@ -3,40 +3,40 @@ window.addEventListener("DOMContentLoaded", () => {
   if (localStorage.getItem("budgetAppData")) {
     const data = JSON.parse(localStorage.getItem("budgetAppData"));
     tempAmount = data.tempAmount;
-    expenditureValue.innerText = data.expenditureValue;
-    balanceValue.innerText = data.balanceValue;
+    expenditureValue.textContent = data.expenditureValue;
+    balanceValue.textContent = data.balanceValue;
     list.innerHTML = data.listHTML;
     bindEditDeleteEvents(); // Re-bind edit/delete event listeners
   }
   // Set initial state if no saved data is available
   else {
     tempAmount = 0;
-    expenditureValue.innerText = 0;
-    balanceValue.innerText = 0;
+    expenditureValue.textContent = "0";
+    balanceValue.textContent = "0";
   }
 });
 
 //Function To Disable Edit and Delete Button
 const disableButtons = (bool) => {
-  let editButtons = document.getElementsByClassName("edit");
-  Array.from(editButtons).forEach((element) => {
-    element.disabled = bool;
+  let editButtons = document.querySelectorAll(".edit");
+  editButtons.forEach((button) => {
+    button.disabled = bool;
   });
 };
 
 //Function To Modify List Elements
 const modifyElement = (element, edit = false) => {
-  let parentDiv = element.parentElement.parentElement;
-  let parentAmount = parentDiv.querySelector(".amount").innerText;
+  let parentDiv = element.closest(".sublist-content");
+  let parentAmount = parentDiv.querySelector(".amount").textContent;
   if (edit) {
-    let parentText = parentDiv.querySelector(".product").innerText;
+    let parentText = parentDiv.querySelector(".product").textContent;
     productTitle.value = parentText;
     userAmount.value = parentAmount;
     disableButtons(true);
   }
   // Update balance on edit/delete
-  balanceValue.innerText = parseInt(balanceValue.innerText) + parseInt(parentAmount);
-  expenditureValue.innerText = parseInt(expenditureValue.innerText) - parseInt(parentAmount);
+  balanceValue.textContent = parseInt(balanceValue.textContent) + parseInt(parentAmount);
+  expenditureValue.textContent = parseInt(expenditureValue.textContent) - parseInt(parentAmount);
   parentDiv.remove();
   // Save data to localStorage
   saveDataToLocalStorage();
@@ -60,23 +60,6 @@ const bindEditDeleteEvents = () => {
   });
 };
 
-// Function to save data to localStorage
-const saveDataToLocalStorage = () => {
-  const data = {
-    tempAmount: tempAmount,
-    expenditureValue: expenditureValue.innerText,
-    balanceValue: balanceValue.innerText,
-    listHTML: list.innerHTML
-  };
-
-  console.log("Data before saving:", data); // Log data before saving
-
-  localStorage.setItem("budgetAppData", JSON.stringify(data));
-
-  console.log("Data after saving:", data); // Log data after saving
-};
-
-
 //Function To Create List
 const listCreator = (expenseName, expenseValue) => {
   let sublistContent = document.createElement("div");
@@ -84,15 +67,25 @@ const listCreator = (expenseName, expenseValue) => {
   list.appendChild(sublistContent);
   sublistContent.innerHTML = `<p class="product">${expenseName}</p><p class="amount">${expenseValue}</p>`;
   let editButton = document.createElement("button");
-  editButton.classList.add("fa-solid", "fa-pen-to-square", "edit");
-  editButton.style.fontSize = "1.2em";
+  editButton.classList.add("edit");
+  editButton.textContent = "Edit";
   let deleteButton = document.createElement("button");
-  deleteButton.classList.add("fa-solid", "fa-trash-can", "delete");
-  deleteButton.style.fontSize = "1.2em";
+  deleteButton.classList.add("delete");
+  deleteButton.textContent = "Delete";
   sublistContent.appendChild(editButton);
   sublistContent.appendChild(deleteButton);
-  document.getElementById("list").appendChild(sublistContent);
   bindEditDeleteEvents(); // Bind edit/delete events for the new item
   // Save data to localStorage
   saveDataToLocalStorage();
+};
+
+// Function to save data to localStorage
+const saveDataToLocalStorage = () => {
+  const data = {
+    tempAmount: tempAmount,
+    expenditureValue: expenditureValue.textContent,
+    balanceValue: balanceValue.textContent,
+    listHTML: list.innerHTML
+  };
+  localStorage.setItem("budgetAppData", JSON.stringify(data));
 };
