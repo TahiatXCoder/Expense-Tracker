@@ -6,6 +6,7 @@ window.addEventListener("DOMContentLoaded", () => {
     expenditureValue.innerText = data.expenditureValue;
     balanceValue.innerText = data.balanceValue;
     list.innerHTML = data.listHTML;
+    bindEditDeleteEvents(); // Re-bind edit/delete event listeners
   }
   // Set initial state if no saved data is available
   else {
@@ -37,6 +38,44 @@ const modifyElement = (element, edit = false) => {
   balanceValue.innerText = parseInt(balanceValue.innerText) + parseInt(parentAmount);
   expenditureValue.innerText = parseInt(expenditureValue.innerText) - parseInt(parentAmount);
   parentDiv.remove();
+  // Save data to localStorage
+  saveDataToLocalStorage();
+};
+
+// Function to bind edit/delete events
+const bindEditDeleteEvents = () => {
+  let editButtons = document.querySelectorAll(".edit");
+  let deleteButtons = document.querySelectorAll(".delete");
+  
+  editButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      modifyElement(button, true);
+    });
+  });
+
+  deleteButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      modifyElement(button);
+    });
+  });
+};
+
+//Function To Create List
+const listCreator = (expenseName, expenseValue) => {
+  let sublistContent = document.createElement("div");
+  sublistContent.classList.add("sublist-content", "flex-space");
+  list.appendChild(sublistContent);
+  sublistContent.innerHTML = `<p class="product">${expenseName}</p><p class="amount">${expenseValue}</p>`;
+  let editButton = document.createElement("button");
+  editButton.classList.add("fa-solid", "fa-pen-to-square", "edit");
+  editButton.style.fontSize = "1.2em";
+  let deleteButton = document.createElement("button");
+  deleteButton.classList.add("fa-solid", "fa-trash-can", "delete");
+  deleteButton.style.fontSize = "1.2em";
+  sublistContent.appendChild(editButton);
+  sublistContent.appendChild(deleteButton);
+  document.getElementById("list").appendChild(sublistContent);
+  bindEditDeleteEvents(); // Bind edit/delete events for the new item
   // Save data to localStorage
   saveDataToLocalStorage();
 };
